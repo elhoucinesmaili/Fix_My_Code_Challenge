@@ -1,44 +1,50 @@
 #!/usr/bin/python3
-""" FizzBuzz
+"""
+FizzBuzz: Prints numbers from 1 to n with substitutions for multiples.
 """
 import sys
 
 
 def fizzbuzz(n):
     """
-    FizzBuzz function prints numbers from 1 to n separated by a space.
+    Print the FizzBuzz sequence from 1 to n.
 
-    - For multiples of three print "Fizz" instead of the number and for
-      multiples of five print "Buzz".
-    - For numbers which are multiples of both three and five print "FizzBuzz".
+    - Print "Fizz" for multiples of 3.
+    - Print "Buzz" for multiples of 5.
+    - Print "FizzBuzz" for multiples of both 3 and 5.
+    - Print the number itself otherwise.
     """
     if n < 1:
         return
 
-    tmp_result = []
+    result = []
     for i in range(1, n + 1):
-        if (i % 3 == 0 and i % 5 == 0):  # Check for multiples of both 3 and 5 first
-            tmp_result.append("FizzBuzz")
-        elif (i % 3 == 0):  # Check for multiples of 3
-            tmp_result.append("Fizz")
-        elif (i % 5 == 0):  # Check for multiples of 5
-            tmp_result.append("Buzz")
+        if i % 3 == 0 and i % 5 == 0:  # Multiples of both 3 and 5
+            result.append("FizzBuzz")
+        elif i % 3 == 0:  # Multiples of 3
+            result.append("Fizz")
+        elif i % 5 == 0:  # Multiples of 5
+            result.append("Buzz")
         else:
-            tmp_result.append(str(i))
-    print(" ".join(tmp_result))
+            result.append(str(i))
+    
+    # Print the result as a single space-separated string
+    print(" ".join(result))
 
 
 if __name__ == '__main__':
-    if len(sys.argv) <= 1:
-        print("Missing number")
+    if len(sys.argv) != 2:
+        print("Missing or extra arguments")
         print("Usage: ./0-fizzbuzz.py <number>")
-        print("Example: ./0-fizzbuzz.py 89")
+        print("Example: ./0-fizzbuzz.py 15")
         sys.exit(1)
 
     try:
         number = int(sys.argv[1])
+        if number < 1:
+            print("Please provide a positive integer greater than 0")
+            sys.exit(1)
         fizzbuzz(number)
     except ValueError:
-        print("Please provide a valid number")
+        print("Invalid input: Please provide a valid integer")
         sys.exit(1)
-
