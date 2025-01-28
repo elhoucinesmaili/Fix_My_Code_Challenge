@@ -1,6 +1,5 @@
 class Square:
     """A square class"""
-    
     width = 0
     height = 0
 
