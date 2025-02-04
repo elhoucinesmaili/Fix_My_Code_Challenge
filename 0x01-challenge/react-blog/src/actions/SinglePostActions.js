@@ -5,57 +5,58 @@ var IncludeHandler = require('../IncludeHandler');
 
 class SinglePostActions {
 
-    loadSinglePost(id,cb){
+    loadSinglePost(id, cb) {
         var self = this;
 
         var SinglePostStore = require('../stores/SinglePostStore');
         var state = SinglePostStore.getState();
-        if(!!state.stateById[id]) {
+
+        if (!!state.stateById[id]) {
             this.actions.updateCurrentPost(state.stateById[id].post);
             this.actions.updateIncludes(state.stateById[id].includes);
-            if(cb){
+            if (cb) {
                 cb();
             }
         } else {
-            if(typeof window != 'undefined' && typeof window.NProgress != 'undefined') {
+            if (typeof window != 'undefined' && typeof window.NProgress != 'undefined') {
                 NProgress.start();
             }
 
-            request.get(config.baseUrl+'/ajax/post/'+id,function(err,response){
+            request.get(config.baseUrl + '/ajax/post/' + id, function (err, response) {
                 var post = response.body;
                 var includes = post.includes || [], loadedIncludes = [];
-                var includeNum  = includes.length;
-                
-                var finish = function() {
+                var includeNum = includes.length;
+
+                var finish = function () {
                     self.actions.updateCurrentPost(post);
                     self.actions.updateIncludes(loadedIncludes);
-                    setTimeout(function(){
-                        if(typeof NProgress != 'undefined') {
+                    setTimeout(function () {
+                        if (typeof NProgress != 'undefined') {
                             NProgress.done();
                         }
-                    },500);
-                    if(cb){
+                    }, 500);
+                    if (cb) {
                         cb();
                     }
                 };
 
-                if(includeNum > 0) {
-
-                    var includeCallback = function(type, data, path) {
+                if (includeNum > 0) {
+                    var includeCallback = function (type, data, path) {
                         loadedIncludes.push({
                             type: type,
                             value: data,
                             path: path
                         });
 
-                        includeNum --;
-                        if(includeNum == 0) {
+                        includeNum--;
+                        if (includeNum == 0) {
                             finish();
                         }
                     };
 
                     var type, path;
-                    for(const i=0; i<includes.length; i++) {
+                    // Changed from "const" to "let" to allow re-assignment within the loop
+                    for (let i = 0; i < includes.length; i++) {
                         type = includes[i].type;
                         path = includes[i].path;
                         IncludeHandler.handleInclude(type, path, includeCallback);
@@ -63,22 +64,21 @@ class SinglePostActions {
                 } else {
                     finish();
                 }
-            });   
+            });
         }
     }
 
-    updateCurrentPost(post){
+    updateCurrentPost(post) {
         this.dispatch(post);
     }
-    
+
     updateIncludes(includes) {
         this.dispatch(includes);
     }
-    
+
     reset() {
         this.dispatch();
     }
 }
-
 
 module.exports = alt.createActions(SinglePostActions);

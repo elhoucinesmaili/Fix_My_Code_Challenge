@@ -1,5 +1,4 @@
 var React = require('react/addons');
-
 var Navbar = require('react-bootstrap').Navbar;
 var NavBrand = require('react-bootstrap').NavBrand;
 var Link = require('react-router').Link;
@@ -10,13 +9,12 @@ var Header = React.createClass({
         router: React.PropTypes.func
     },
 
-    render : function() {
+    render: function() {
         return (
             <Navbar>
-                <NavBrand>Link to={`/`}>React Blog</Link></NavBrand>
+                <NavBrand><Link to={`/`}>React Blog</Link></NavBrand> {/* Fixed Link usage */}
             </Navbar>
-            
-        )
+        );
     }
 });
 
